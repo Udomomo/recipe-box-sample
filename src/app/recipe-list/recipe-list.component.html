@@ -1,0 +1,19 @@
+<h1>{{ pageTitle() }}</h1>
+<div class="new">
+<span>Came up a new idea?</span>
+<a [routerLink]="['/recipes', 'new']"><button>New Recipe</button></a>
+</div>
+<div class="search">
+  <span>Recipe Search: </span>
+  <input [(ngModel)]="keyword" />
+</div>
+<div class="recipe-button">
+  @for (recipe of filteredRecipes(); track recipe.id) {
+  <div>
+    <a [routerLink]="['/recipes', recipe.id]"><button>{{ recipe.name }}</button></a>
+    @if (recipe.isFavorite) {
+    <span>★</span>
+    }
+  </div>
+  }
+</div>
