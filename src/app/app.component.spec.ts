@@ -14,9 +14,9 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have the 'angular-advent-calendar-2025' title`, () => {
+  it(`should have the 'recipe-box-sample' title`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('angular-advent-calendar-2025');
+    expect(app.title).toEqual('recipe-box-sample');
   });
 });

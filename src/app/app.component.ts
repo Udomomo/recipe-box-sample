@@ -8,5 +8,5 @@ import { RouterOutlet } from '@angular/router';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  title = 'angular-advent-calendar-2025';
+  title = 'recipe-box-sample';
 }
