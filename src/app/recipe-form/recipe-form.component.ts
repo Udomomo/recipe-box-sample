@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Recipe } from '../recipe';
+import { RecipeService } from '../recipe.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -13,7 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   styleUrls: ['./recipe-form.component.css'],
 })
 export class RecipeForm {
-  private readonly recipeService = inject(Recipe);
+  private readonly recipeService = inject(RecipeService);
   private readonly router = inject(Router);
   protected readonly formGroup = new FormGroup({
     name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
@@ -23,8 +23,9 @@ export class RecipeForm {
   onSubmit() {
     if (this.formGroup.valid) {
       console.log(this.formGroup.value);
-      this.recipeService.addRecipe(this.formGroup.getRawValue().name, this.formGroup.getRawValue().description)
-      this.router.navigate(['/']);
+      this.recipeService.addRecipe(this.formGroup.getRawValue().name, this.formGroup.getRawValue().description).subscribe(() => {
+        this.router.navigate(['/']);
+      });
     }
   }
 }

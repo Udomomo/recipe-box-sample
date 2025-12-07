@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RecipeDetail } from './recipe-detail.component';
+import { ActivatedRoute } from '@angular/router';
 
 describe('RecipeDetailComponent', () => {
   let component: RecipeDetail;
@@ -8,7 +9,10 @@ describe('RecipeDetailComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RecipeDetail]
+      imports: [RecipeDetail],
+      providers: [
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: new Map([['recipeId', '1']]) } } }
+      ]
     })
     .compileComponents();
 

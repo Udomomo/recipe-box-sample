@@ -1,7 +1,8 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { RecipeModel } from '../models';
-import { Recipe } from '../recipe';
+import { RecipeService } from '../recipe.service';
 import { ActivatedRoute } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-recipe-detail',
@@ -10,17 +11,12 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./recipe-detail.component.css'],
 })
 export class RecipeDetail {
-  private readonly recipeService = inject(Recipe);
+  private readonly recipeService = inject(RecipeService);
   private readonly routes = inject(ActivatedRoute);
   private readonly recipeId = signal<string | null>('');
-  protected readonly recipe = computed(() => {
-    const recipes = this.recipeService.getRecipes();
-    const recipeId = this.recipeId();
-    if (!recipeId) return null;
-    return recipes.find((recipe) => recipe.id.toString() === recipeId) || null;
-  })
+  protected readonly recipe = signal<RecipeModel | null>(null);
   protected readonly servings = signal(1);
-  protected readonly adjustedIngredients = computed(() => 
+  protected readonly adjustedIngredients = computed(() =>
     this.recipe()?.ingredients.map((ingredient) => ({
       ...ingredient,
       quantity: ingredient.quantity * this.servings()
@@ -29,6 +25,9 @@ export class RecipeDetail {
 
   constructor() {
     this.recipeId.set(this.routes.snapshot.paramMap.get('recipeId'));
+    this.recipeService.getRecipe(Number(this.recipeId())).pipe(takeUntilDestroyed()).subscribe((recipe) => {
+      this.recipe.set(recipe);
+    });
   }
 
   increaseServings() {
