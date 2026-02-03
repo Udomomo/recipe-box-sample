@@ -1,5 +1,5 @@
-import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { effect, inject, Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse, httpResource } from '@angular/common/http';
 import { RecipeModel } from './models';
 import { catchError, map, Observable, throwError } from 'rxjs';
 
@@ -7,13 +7,7 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 export class RecipeService {
   private readonly httpClient = inject(HttpClient);
 
-  public listRecipes(): Observable<RecipeModel[]> {
-    return this.httpClient.get<RecipeModel[]>('/api/recipes')
-      .pipe(
-        map((response) => response),
-        catchError((error) => this.handleError(error))
-      )
-  }
+  public readonly recipes = httpResource<RecipeModel[]>(() => '/api/recipes');
 
   public getRecipe(id: number): Observable<RecipeModel> {
     return this.httpClient.get<RecipeModel>(`/api/recipes/${id}`)
@@ -29,6 +23,13 @@ export class RecipeService {
         map((response) => response),
         catchError((error) => this.handleError(error))
       )
+  }
+
+  constructor() {
+    effect(() => {
+      const error = this.recipes.error() as HttpErrorResponse;
+      this.handleError(error);
+    });
   }
 
   private handleError(error: HttpErrorResponse) {

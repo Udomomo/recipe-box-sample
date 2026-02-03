@@ -10,6 +10,6 @@ node index.js
 
 - フロントエンド 
 ```
-ng run serve
+ng serve
 ```
 

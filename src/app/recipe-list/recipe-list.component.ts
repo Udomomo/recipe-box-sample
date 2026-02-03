@@ -16,15 +16,11 @@ export class RecipeList {
 
   protected readonly pageTitle = signal('My Recipe Box');
   protected readonly keyword = signal('')
-  protected readonly recipes = signal<RecipeModel[]>([]);
+  protected readonly recipes = this.recipeService.recipes;
 
-  constructor() {
-    this.recipeService.listRecipes().pipe(takeUntilDestroyed()).subscribe((recipes) => {
-      this.recipes.set(recipes);
-    });
-  }
+  constructor() {}
 
   readonly filteredRecipes = computed(() => {
-    return this.recipes().filter(recipe => recipe.name.toLowerCase().includes(this.keyword().toLowerCase()))
+    return this.recipes.value()?.filter(recipe => recipe.name.toLowerCase().includes(this.keyword().toLowerCase())) ?? [];
   })
 }
