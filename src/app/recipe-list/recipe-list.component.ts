@@ -3,7 +3,6 @@ import { FormsModule } from '@angular/forms';
 import { RecipeService } from '../recipe.service';
 import { RouterLink } from '@angular/router';
 import { RecipeModel } from '../models';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-recipe-list',
@@ -21,6 +20,8 @@ export class RecipeList {
   constructor() {}
 
   readonly filteredRecipes = computed(() => {
-    return this.recipes.value()?.filter(recipe => recipe.name.toLowerCase().includes(this.keyword().toLowerCase())) ?? [];
-  })
+    return this.recipes().filter(
+      recipe => recipe.name.toLowerCase().includes(this.keyword().toLowerCase())
+    );
+  });
 }
