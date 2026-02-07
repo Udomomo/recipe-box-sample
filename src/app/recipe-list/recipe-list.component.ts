@@ -12,12 +12,12 @@ import { RecipeModel } from '../models';
 })
 export class RecipeList {
   private readonly recipeService = inject(RecipeService);
+  private readonly recipes = this.recipeService.listRecipes();
 
   protected readonly pageTitle = signal('My Recipe Box');
   protected readonly keyword = signal('')
-  protected readonly recipes = computed(() => this.recipeService.listRecipesResource.value() || []);
 
-  readonly filteredRecipes = computed(() => {
+  protected readonly filteredRecipes = computed(() => {
     return this.recipes().filter(
       recipe => recipe.name.toLowerCase().includes(this.keyword().toLowerCase())
     );

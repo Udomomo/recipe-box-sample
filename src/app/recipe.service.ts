@@ -20,6 +20,17 @@ export class RecipeService {
     return `/api/recipes/${userId}`;
   });
 
+  public listRecipes(): Signal<RecipeModel[]> {
+    return computed(() => this.listRecipesResource.value());
+  }
+
+  public getRecipe(recipeId: string): Signal<RecipeModel | undefined> {
+    this.userId.set(recipeId);
+    return computed(() => {
+      return this.getRecipeResource.value();
+    })
+  }
+
   public addRecipe(name: string, description: string): Observable<{ id: number }> {
     return this.httpClient.post<{ id: number }>('/api/recipes', { name, description })
       .pipe(
