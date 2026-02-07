@@ -1,4 +1,4 @@
-import { computed, effect, inject, Injectable } from '@angular/core';
+import { computed, effect, inject, Injectable, Signal, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse, httpResource } from '@angular/common/http';
 import { RecipeModel } from './models';
 import { catchError, map, Observable, throwError } from 'rxjs';
@@ -6,23 +6,19 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class RecipeService {
   private readonly httpClient = inject(HttpClient);
-  private readonly recipeResource = httpResource<RecipeModel[]>(() => '/api/recipes');
+  public readonly userId = signal('');
 
-  public readonly recipes = computed(() => {
-    if (this.recipeResource.status() === 'error') {
-      this.handleError(this.recipeResource.error() as HttpErrorResponse);
-      return [];
-    }
-    return this.recipeResource.value() ?? [];
+  public readonly listRecipesResource = httpResource<RecipeModel[]>(() => '/api/recipes', {
+    defaultValue: [],
   });
-
-  public getRecipe(id: number): Observable<RecipeModel> {
-    return this.httpClient.get<RecipeModel>(`/api/recipes/${id}`)
-      .pipe(
-        map((response) => response),
-        catchError((error) => this.handleError(error))
-      )
-  }
+  
+  public readonly getRecipeResource = httpResource<RecipeModel>(() => {
+    const userId = this.userId();
+    if (userId === '') {
+      return undefined;
+    }
+    return `/api/recipes/${userId}`;
+  });
 
   public addRecipe(name: string, description: string): Observable<{ id: number }> {
     return this.httpClient.post<{ id: number }>('/api/recipes', { name, description })
@@ -32,7 +28,18 @@ export class RecipeService {
       )
   }
 
-  constructor() { }
+  constructor() { 
+    effect(() => {
+      if (this.listRecipesResource.status() === 'error') {
+        this.handleError(this.listRecipesResource.error() as HttpErrorResponse);
+      }
+    });
+    effect(() => {
+      if (this.getRecipeResource.status() === 'error') {
+        this.handleError(this.getRecipeResource.error() as HttpErrorResponse);
+      }
+    });
+  }
 
   private handleError(error: HttpErrorResponse) {
     // クライアント側あるいはネットワークによるエラー

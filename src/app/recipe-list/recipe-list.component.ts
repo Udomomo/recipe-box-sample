@@ -15,9 +15,7 @@ export class RecipeList {
 
   protected readonly pageTitle = signal('My Recipe Box');
   protected readonly keyword = signal('')
-  protected readonly recipes = this.recipeService.recipes;
-
-  constructor() {}
+  protected readonly recipes = computed(() => this.recipeService.listRecipesResource.value() || []);
 
   readonly filteredRecipes = computed(() => {
     return this.recipes().filter(
