@@ -1,6 +1,6 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import { routes } from './app.routes';
 import { BaseUrlInterceptor } from './base-url-interceptor';
@@ -8,7 +8,8 @@ import { BaseUrlInterceptor } from './base-url-interceptor';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }), 
-    provideRouter(routes),
+    // withComponentInputBindingによって、ルートのパラメータを解決済みの状態でinputにバインドできるようになる
+    provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(
       withInterceptorsFromDi(),
     ),
