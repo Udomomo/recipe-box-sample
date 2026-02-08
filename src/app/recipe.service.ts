@@ -6,13 +6,13 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class RecipeService {
   private readonly httpClient = inject(HttpClient);
-  public readonly userId = signal('');
+  private readonly userId = signal('');
 
-  public readonly listRecipesResource = httpResource<RecipeModel[]>(() => '/api/recipes', {
+  private readonly listRecipesResource = httpResource<RecipeModel[]>(() => '/api/recipes', {
     defaultValue: [],
   });
   
-  public readonly getRecipeResource = httpResource<RecipeModel>(() => {
+  private readonly getRecipeResource = httpResource<RecipeModel>(() => {
     const userId = this.userId();
     if (userId === '') {
       return undefined;

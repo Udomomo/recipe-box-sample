@@ -2,7 +2,6 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RecipeService } from '../recipe.service';
 import { RouterLink } from '@angular/router';
-import { RecipeModel } from '../models';
 
 @Component({
   selector: 'app-recipe-list',
